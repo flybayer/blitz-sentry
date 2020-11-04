@@ -11,7 +11,7 @@ export default function App({ Component, pageProps, err }: AppProps & { err: any
   const router = useRouter()
 
   useEffect(() => {
-    Sentry.setUser({ id: session.userId.toString() })
+    if (session.userId) Sentry.setUser({ id: session.userId.toString() })
   }, [session])
 
   return (
