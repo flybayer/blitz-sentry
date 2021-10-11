@@ -2,8 +2,9 @@ import * as Sentry from "@sentry/node"
 import getConfig from "next/config"
 import { RewriteFrames } from "@sentry/integrations"
 
-if (process.env.SENTRY_DSN) {
-  const config = getConfig()
+const config = getConfig()
+
+if (process.env.SENTRY_DSN && config) {
   const distDir = `${config.serverRuntimeConfig.rootDir}/.next`
   Sentry.init({
     integrations: [
@@ -25,6 +26,9 @@ if (process.env.SENTRY_DSN) {
           case "ChunkLoadError":
             return null
         }
+        if (error.message?.includes("Your card was declined")) return null
+        if (error.message?.includes("Your card has insufficient funds")) return null
+        if (error.message?.includes("security code is incorrect")) return null
       }
       return event
     },
